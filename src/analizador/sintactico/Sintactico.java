@@ -40,6 +40,7 @@ public class Sintactico {
             terminales = gramatica.terminales;
             simboloInicial = gramatica.simboloInicial;
             
+            System.out.println("> Selecciona el archivo del programa");
             File filePrograma = ma.abrir();
             if (filePrograma.exists()) {
                 Lista programa = ma.leer(filePrograma);

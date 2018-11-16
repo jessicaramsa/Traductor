@@ -1,5 +1,7 @@
 package analizador.lexico;
 
+import archivo.ManejadorArchivos;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,6 +19,12 @@ public class Principal {
         46, 58, 59, 60, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125};
 
     public Principal() {
+        ManejadorArchivos ma = new ManejadorArchivos();
+        File file = ma.abrir();
+        if (file.exists()) {
+            
+        }
+        
         String entradas = f.abrirLeerArch();
         String entradasDiv[] = entradas.split(" ");
 
@@ -25,7 +33,6 @@ public class Principal {
         for (int i = 0; i < palabras.size(); i++) {
             recorrerPalabra(palabras.get(i));
         }
-        //guardar();
         imprimir();
     }
 
