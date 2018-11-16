@@ -21,9 +21,10 @@ public class FiltrarSimbolos {
     private Pila tempTerminales = new Pila();
     private Pila tempNoTerminales = new Pila();
     
-    public FiltrarSimbolos() {
-        ManejadorArchivos a = new ManejadorArchivos();
-        file = a.abrir();
+    public FiltrarSimbolos() {}
+    
+    public FiltrarSimbolos(File f) {
+        file = f;
         if (file.exists()) {
             if (leer(file)) {
                 clasificarNoTerminales(tempNoTerminales);
@@ -33,16 +34,6 @@ public class FiltrarSimbolos {
                 System.out.println("El archivo está vacío.");
             }
         } else System.out.println("El archivo " + file.getName() + "no existe.");
-    }
-
-    /* Selecciona un archivo donde reside la gramática. */
-    public void abrir() {
-        JFileChooser fch = new JFileChooser("src/gramatica/test");
-        fch.showOpenDialog(fch);
-        if (fch.isFileSelectionEnabled()) {
-            String path = fch.getSelectedFile().getAbsolutePath();
-            file = new File(path);
-        }
     }
     
     /* Lee el archivo seleccionado donde se encuentra la gramática. */
@@ -157,7 +148,8 @@ public class FiltrarSimbolos {
     public boolean esRepetido(String nt, Pila noTerminales) {
         boolean esRepetido = false;
         int indexNT = 0, repeticiones = 0;
-        while (indexNT < noTerminales.longitud() && esRepetido && repeticiones == 1) {
+        while (indexNT < noTerminales.longitud() && esRepetido
+                                && (repeticiones > 1 || repeticiones == 0)) {
             esRepetido = noTerminales.buscarElemento(nt);
             if (esRepetido) repeticiones++;
             indexNT++;

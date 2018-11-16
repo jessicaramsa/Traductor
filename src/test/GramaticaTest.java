@@ -1,10 +1,14 @@
 package test;
 
+import archivo.ManejadorArchivos;
 import gramatica.gramatica.FiltrarSimbolos;
+import java.io.File;
 
 public class GramaticaTest {
     public GramaticaTest() {
-        FiltrarSimbolos a = new FiltrarSimbolos();
+        ManejadorArchivos ma = new ManejadorArchivos();
+        File file = ma.abrir();
+        FiltrarSimbolos a = new FiltrarSimbolos(file);
         System.out.println("Producciones:");
         a.producciones.visualiza();
         System.out.println("\nLado izquierdo sin repetir (símbolos no terminales):");
