@@ -62,7 +62,7 @@ public class Pila {
         } else return false;
     }
     
-       public int buscarElementoPosicion(Object e) {
+    public int buscarElementoPosicion(Object e) {
         if (!esVacia() && e != null) {
             NodoPila posicion = this.cima;
             boolean encontrado = posicion.elemento.equals(e);
@@ -73,7 +73,7 @@ public class Pila {
                 if (!encontrado) posicion = posicion.siguiente;
             }
             return encontrado ? cont : null;
-        } else return null;
+        } else return 0;
     }
     
     public Object buscarPosicion(int index) {

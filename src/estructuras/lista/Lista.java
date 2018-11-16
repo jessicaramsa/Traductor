@@ -2,11 +2,11 @@ package estructuras.lista;
 
 public class Lista {
     private NodoLista cabeza;
-    private int tamaño;
+    private int longitud;
 
     public Lista() {
         cabeza = null;
-        tamaño = 0;
+        longitud = 0;
     }
 
     public void setCabeza(NodoLista c) {
@@ -17,8 +17,8 @@ public class Lista {
         return cabeza;
     }
 
-    public int tamaño() {
-        return tamaño;
+    public int longitud() {
+        return longitud;
     }
 
     public boolean esVacia() {
@@ -29,7 +29,7 @@ public class Lista {
         NodoLista nuevo = new NodoLista(in);
         nuevo.siguiente = cabeza;
         cabeza = nuevo;
-        tamaño++;
+        longitud++;
         return this;
     }
 
@@ -46,7 +46,7 @@ public class Lista {
             nuevo.siguiente = puntero.siguiente;
             puntero.siguiente = nuevo;
         }
-        tamaño++;
+        longitud++;
         return this;
     }
 
@@ -59,7 +59,7 @@ public class Lista {
                 p = p.siguiente;
             p.siguiente = nuevo;
         }
-        tamaño++;
+        longitud++;
         return this;
     }
 
@@ -67,19 +67,19 @@ public class Lista {
         if (cabeza != null) {
             NodoLista puntero = cabeza;
             int c = 0;
-            while (c < tamaño && puntero.siguiente != null) {
+            while (c < longitud && puntero.siguiente != null) {
                 puntero = puntero.siguiente;
                 c++;
             }
-            if (c < tamaño) return c;
-            else if (c != tamaño) return Integer.parseInt(null);
+            if (c < longitud) return c;
+            else if (c != longitud) return Integer.parseInt(null);
         }
         return Integer.parseInt(null);
     }
 
     public Object localiza(int p) {
         if (cabeza == null)
-            return "La lista solo tiene " + tamaño + " elementos.";
+            return "La lista solo tiene " + longitud + " elementos.";
         else {
             NodoLista puntero = cabeza;
             int c = 0;
@@ -97,7 +97,7 @@ public class Lista {
         int c = 0;
 
         if (!esVacia()) {
-            while (c < tamaño && puntero.siguiente != null) {
+            while (c < longitud && puntero.siguiente != null) {
                 puntero = puntero.siguiente;
                 c++;
             }
@@ -111,11 +111,11 @@ public class Lista {
         int c = 0;
 
         if (!esVacia()) {
-            while (c < tamaño && puntero.siguiente != null) {
+            while (c < longitud && puntero.siguiente != null) {
                 puntero = puntero.siguiente;
                 c++;
             }
-            if (c < tamaño) return puntero;
+            if (c < longitud) return puntero;
             else return "La lista no contiene la posición " + p + ".";
         } else return "La lista está vacía.";
     }
@@ -125,17 +125,17 @@ public class Lista {
             if (e == cabeza.getElemento()) cabeza = cabeza.getSiguiente();
             else {
                 NodoLista elim = cabeza;
-                for (int i = 0; i < tamaño; i++)
+                for (int i = 0; i < longitud; i++)
                     elim = elim.getSiguiente();
                 NodoLista sig = elim.getSiguiente();
                 elim.setSiguiente(sig.getSiguiente());
             }
-            tamaño--;
+            longitud--;
         }
     }
 
     public void suprimir(int p) {
-        if (p >= 0 && p < tamaño) {
+        if (p >= 0 && p < longitud) {
             if (p == 0) cabeza = cabeza.getSiguiente();
             else {
                 NodoLista elim = cabeza;
@@ -144,7 +144,7 @@ public class Lista {
                 NodoLista sig = elim.getSiguiente();
                 elim.setSiguiente(sig.getSiguiente());
             }
-            tamaño--;
+            longitud--;
         }
     }
 
@@ -158,7 +158,7 @@ public class Lista {
                 elim = null;
                 c++;
             }
-            tamaño = 0;
+            longitud = 0;
         } else System.out.println("La lista esta vacía.");
     }
 
@@ -166,7 +166,7 @@ public class Lista {
         if (!esVacia()) {
             NodoLista in = cabeza;
             int c = 0;
-            while (c < tamaño && in != null) {
+            while (c < longitud && in != null) {
                 System.out.println(c + ". " + in.getElemento());
                 in = in.getSiguiente();
                 c++;

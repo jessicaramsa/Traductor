@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Principal {
+public class Lexico {
     Archivo f = new Archivo();
     ArrayList<String> palabras = new ArrayList();
     ArrayList tokenNumerico = new ArrayList();
@@ -14,22 +14,28 @@ public class Principal {
     ArrayList tokenEspecial = new ArrayList();
     ArrayList errores = new ArrayList();
     String linea = "";
-    String archSalida = "analizadorLexico.txt";
     char caracterEspecial[] = {42, 43, 45, 47, 61, 33, 34, 35, 36, 37, 38, 39, 40, 41, 44,
         46, 58, 59, 60, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125};
 
-    public Principal() {
+    public Lexico() {
         ManejadorArchivos ma = new ManejadorArchivos();
         File file = ma.abrir();
         if (file.exists()) {
-            
-        }
-        
-        String entradas = f.abrirLeerArch();
-        String entradasDiv[] = entradas.split(" ");
+            String entradas = f.abrirLeerArch();
+            String entradasDiv[] = entradas.split(" ");
 
-        palabras.addAll(Arrays.asList(entradasDiv));
-        
+            palabras.addAll(Arrays.asList(entradasDiv));
+
+            for (int i = 0; i < palabras.size(); i++) {
+                recorrerPalabra(palabras.get(i));
+            }
+            imprimir();
+        }
+    }
+    
+    public Lexico(String linea) {
+        palabras.add(linea);
+
         for (int i = 0; i < palabras.size(); i++) {
             recorrerPalabra(palabras.get(i));
         }
@@ -190,31 +196,6 @@ public class Principal {
         errores.add(e);
     }
     
-    /* Guarda los Token y errrores generados en un archivo de salida */
-    private void guardar() {
-        f.guardarArch(archSalida, "Token Numerico");
-        for (int i = 0; i < tokenNumerico.size(); i++) {
-            f.guardarArch(archSalida, tokenNumerico.get(i).toString());
-        }
-        f.guardarArch(archSalida, "tokenAlfabetico");
-        for (int i = 0; i < tokenAlfabetico.size(); i++) {
-            f.guardarArch(archSalida, tokenAlfabetico.get(i).toString());
-        }
-        f.guardarArch(archSalida, "TokenAlfaNumerico");
-        for (int i = 0; i < tokenAlfaNumerico.size(); i++) {
-            f.guardarArch(archSalida, tokenAlfaNumerico.get(i).toString());
-        }
-        f.guardarArch(archSalida, "Token Especial");
-        for (int i = 0; i < tokenEspecial.size(); i++) {
-            f.guardarArch(archSalida, tokenEspecial.get(i).toString());
-        }
-        
-        f.guardarArch(archSalida, "Errores");
-        for (int i = 0; i < errores.size(); i++) {
-            f.guardarArch(archSalida, errores.get(i).toString());
-        }
-    }
-    
     /* Imprime los token y errores generados */
     private void imprimir() {
         System.out.println("Palabras de entrada");
@@ -240,8 +221,12 @@ public class Principal {
         }
         
         System.out.println("Errores");
-        for (int i = 0; i < errores.size(); i++) {
-            System.out.println(errores.get(i));
+        if (errores.isEmpty()) {
+            System.out.println("Programa aceptado");
+        } else {
+            for (int i = 0; i < errores.size(); i++) {
+                System.out.println(errores.get(i));
+            }
         }
     }
 }

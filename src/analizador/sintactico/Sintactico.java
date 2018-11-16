@@ -1,5 +1,6 @@
 package analizador.sintactico;
 
+import analizador.lexico.Lexico;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
 import estructuras.piladinamica.Pila;
@@ -27,6 +28,8 @@ public class Sintactico {
     Pila noTerminales = new Pila();
     Pila terminales = new Pila();
     String simboloInicial = "";
+    Lista simbolosPrograma = new Lista();
+    FiltrarSimbolos fs = new FiltrarSimbolos();
     
     public Sintactico() {
         System.out.println("> Selecciona el archivo de la gramática");
@@ -56,16 +59,17 @@ public class Sintactico {
     public void leerPrograma(Lista programa, String s) {
         automataPila.insertar(s);
         String objX, objA;
-        int x = 0;
-        int a = 0;
+        int x = 0, a = 0, simboloActual = 0;
         
         automataPila.insertar(s);
         objX = automataPila.obtCima().toString();
         x = noTerminales.buscarElementoPosicion(objX);
-        objA = obtenerTokenEntrada(programa, 0);
-        a = terminales.buscarElementoPosicion(objA);
+        dividirSimbolospProgram(programa);
+        objA = obtenerTokenEntrada(programa, simboloActual);
+        a = simbolosPrograma.localiza(objA);
+        
         while (!automataPila.esVacia()) {
-            if (true) {
+            if (fs.esNoTerminal(objX, terminales)) {
                 if (matrizPredictiva[x][a] != 0) {
                     int index = matrizPredictiva[x][a];
                     String linea = ladoDerecho.buscarPosicion(index).toString();
@@ -78,8 +82,9 @@ public class Sintactico {
                 if (x == a) {
                     automataPila.eliminarCima();
                     //regresame el siguiente token analizador lexico
-                    objA = obtenerTokenEntrada(programa, 0);
-                    a = terminales.buscarElementoPosicion(objA);
+                    simboloActual++;
+                    objA = obtenerTokenEntrada(programa, simboloActual);
+                    a = simbolosPrograma.localiza(objA);
                 } else {
                     erroresSintacticos.insertarF(x);
                 }
@@ -87,15 +92,19 @@ public class Sintactico {
         }
     }
     
-    public String obtenerTokenEntrada(Lista programa, int index) {
-        return "";
+    public void dividirSimbolospProgram(Lista programa) {
+        for (int i = 0; i < programa.longitud(); i++) {
+            String[] linea = programa.localiza(i).toString().split(" ");
+            for (int j = 0; j < linea.length; j++) {
+                simbolosPrograma.insertarF(linea[j]);
+            }
+        }
     }
     
-    public void leerLinea(String linea) {
-        String[] simbolos = linea.split(" ");
-        for (int i = 0; i < simbolos.length; i++) {
-            //
-        }
+    public String obtenerTokenEntrada(Lista programa, int index) {
+        Lexico l = new Lexico();
+        String simbolo = simbolosPrograma.localiza(index).toString();
+        return "";
     }
     
     /*  Inserta los simbolos que encuentre en una línea de programa:

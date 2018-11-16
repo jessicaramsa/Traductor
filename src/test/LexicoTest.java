@@ -1,9 +1,9 @@
 package test;
 
-import analizador.lexico.Principal;
+import analizador.lexico.Lexico;
 
 public class LexicoTest {
     public static void main(String[] args) {
-        Principal test = new Principal();
+        Lexico test = new Lexico();
     }
 }
