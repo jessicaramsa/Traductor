@@ -34,7 +34,6 @@ public class ManejadorArchivos {
             String l = br.readLine();
             if (l != null) {
                 while (l != null) {
-                    //producciones.insertar(l);
                     archivo.insertarF(l);
                     l = br.readLine();
                 }

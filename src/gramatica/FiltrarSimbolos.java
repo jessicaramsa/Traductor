@@ -1,4 +1,4 @@
-package gramatica.gramatica;
+package gramatica;
 
 import estructuras.piladinamica.Pila;
 import java.io.BufferedReader;

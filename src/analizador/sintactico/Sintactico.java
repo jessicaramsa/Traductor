@@ -1,10 +1,11 @@
 package analizador.sintactico;
 
 import analizador.lexico.Lexico;
+import archivo.Cadena;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
 import estructuras.piladinamica.Pila;
-import gramatica.gramatica.FiltrarSimbolos;
+import gramatica.FiltrarSimbolos;
 import java.io.File;
 
 public class Sintactico {
@@ -30,6 +31,7 @@ public class Sintactico {
     String simboloInicial = "";
     Lista simbolosPrograma = new Lista();
     FiltrarSimbolos fs = new FiltrarSimbolos();
+    Cadena cad = new Cadena();
     
     public Sintactico() {
         System.out.println("> Selecciona el archivo de la gramática");
@@ -57,7 +59,6 @@ public class Sintactico {
     }
 
     public void leerPrograma(Lista programa, String s) {
-        automataPila.insertar(s);
         String objX, objA;
         int x = 0, a = 0, simboloActual = 0;
         
@@ -81,7 +82,7 @@ public class Sintactico {
             } else {
                 if (x == a) {
                     automataPila.eliminarCima();
-                    //regresame el siguiente token analizador lexico
+                    //regresame el siguiente token, analizador lexico
                     simboloActual++;
                     objA = obtenerTokenEntrada(programa, simboloActual);
                     a = simbolosPrograma.localiza(objA);
@@ -94,7 +95,8 @@ public class Sintactico {
     
     public void dividirSimbolospProgram(Lista programa) {
         for (int i = 0; i < programa.longitud(); i++) {
-            String[] linea = programa.localiza(i).toString().split(" ");
+            //String[] linea = programa.localiza(i).toString().split(" ");
+            String[] linea = cad.dividir((String) programa.localiza(i), " ");
             for (int j = 0; j < linea.length; j++) {
                 simbolosPrograma.insertarF(linea[j]);
             }
