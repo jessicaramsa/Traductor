@@ -1,6 +1,5 @@
-package test;
+package analizador.lexico;
 
-import analizador.lexico.Archivo;
 import archivo.ManejadorArchivos;
 import java.io.File;
 import java.util.ArrayList;
@@ -107,6 +106,7 @@ public class Lexico0 {
         else if (esLetra(c)) clasf = 2;
         else if (esNumerico(c) || esLetra(c)) clasf = 3;
         else if (esEspecial(c)) clasf = 4;
+        else clasf = 5;
         return clasf;
     }
     
@@ -121,20 +121,6 @@ public class Lexico0 {
             default: tipo = false; break;
         }
         return tipo;
-    }
-    
-    /* Actualiza el arreglo de caracteres a validar */
-    public char[] actualizarArray(char[] c) {
-        if ((c.length - 1) > 0) {
-            char[] tempC = new char[c.length - 1];
-            if (c.length > 0) {
-                for (int i = 1; i < c.length; i++) {
-                    tempC[i - 1] = c[i];
-                }
-            }
-            return tempC;
-        }
-        return c;
     }
     
     /* Comprueba si el caracter a leer es 0 */
@@ -191,7 +177,7 @@ public class Lexico0 {
             System.out.println(token.get(i));
         }
         
-        System.out.println("Errores");
+        System.out.println("\nErrores");
         if (errores.isEmpty()) {
             System.out.println("Programa aceptado");
         } else {

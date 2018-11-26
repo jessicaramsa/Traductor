@@ -36,28 +36,49 @@ public class Lexico {
     /* Recorre cada palabra que compone la entrada */
     public void filtrar(String palabra) {
         int estado = 0;
-        char caracteres[] = cad.obtenerCaracteres(palabra);
+        char caracter[] = cad.obtenerCaracteres(palabra);
 
-        if (esNumerico(caracteres[0])) estado = 1;
-        else if (esCero(caracteres[0])) estado = 2;
-        else if (esLetra(caracteres[0])) estado = 3;
-        else if (esEspecial(caracteres[0])) estado = 4;
+        if (esNumerico(caracter[0])) estado = 1;
+        else if (esCero(caracter[0])) estado = 2;
+        else if (esLetra(caracter[0])) estado = 3;
+        else if (esEspecial(caracter[0])) estado = 4;
         else estado = 5;
         
-        if (estado != 5 && estado != 0 && estado != 4) {
-            for (int i = 1; i < caracteres.length; i++) {
-                if (esNumerico(caracteres[i])) {
-                    estado = 1;
-                } else if (esCero(caracteres[i])) {
-                    estado = 2;
-                } else if (esLetra(caracteres[i])) {
-                    estado = 3;
-                } else if (esEspecial(caracteres[i])) {
-                    estado = 4;
-                } else {
-                    estado = 5;
-                    break;
+        if (caracter.length > 1) {
+            int index = 0;
+            while (index < caracter.length && estado != 5) {
+                switch(estado) {
+                    case 1:
+                        estado = 1;
+                        if (esNumerico(caracter[index]) || esCero(caracter[index]))
+                            estado = 1;
+                        else estado = 5;
+                        break;
+                    case 2:
+                        estado = 5;
+                        break;
+                    case 3:
+                        if (esNumerico(caracter[index]) || esCero(caracter[index])
+                            || esLetra(caracter[index]))
+                            estado = 3;
+                        else estado = 5;
+                        break;
+                    case 4:
+                        estado = 5;
+                        break;
+                    default: estado = 5;
                 }
+                
+                if (esNumerico(caracter[index])) {
+                    estado = 1;
+                } else if (esCero(caracter[index])) {
+                    estado = 2;
+                } else if (esLetra(caracter[index])) {
+                    estado = 3;
+                } else if (esEspecial(caracter[index])) {
+                    estado = 4;
+                } else estado = 5;
+                index++;
             }
         }
 

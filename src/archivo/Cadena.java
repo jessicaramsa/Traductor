@@ -30,7 +30,7 @@ public class Cadena {
         return array;
     }
 
-    public String[] dividir(String cadena, String separador) {
+    public String[] dividirAString(String cadena, String separador) {
         String[] array = new String[cadena.length()];
         for (int i = 0; i < cadena.length(); i++) {
             if (!cadena.substring(i, i + 1).equals(separador)) {
@@ -39,7 +39,17 @@ public class Cadena {
         }
         return array;
     }
-
+    
+    public char[] dividirAChar(String cadena, String separador) {
+        char[] array = new char[cadena.length()];
+        for (int i = 0; i < cadena.length(); i++) {
+            if (!cadena.substring(i, i + 1).equals(separador)) {
+                array[i] = cadena.substring(i, i + 1).charAt(0);
+            }
+        }
+        return array;
+    }
+    
     public String unirCaracteres(char[] caracteres) {
         String nuevaCadena = "";
         for (int i = 0; i < caracteres.length; i++) nuevaCadena += caracteres[i];

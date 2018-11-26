@@ -1,6 +1,6 @@
 package analizador.sintactico;
 
-import analizador.lexico.Lexico;
+import analizador.lexico.Lexico0;
 import archivo.Cadena;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
@@ -65,7 +65,7 @@ public class Sintactico {
         automataPila.insertar(s);
         objX = automataPila.obtCima().toString();
         x = noTerminales.buscarElementoPosicion(objX);
-        dividirSimbolospProgram(programa);
+        dividirSimbolosProgram(programa);
         objA = obtenerTokenEntrada(programa, simboloActual);
         a = simbolosPrograma.localiza(objA);
         
@@ -76,9 +76,7 @@ public class Sintactico {
                     String linea = ladoDerecho.buscarPosicion(index).toString();
                     automataPila.eliminarCima();
                     cicloPush(linea);
-                } else {
-                    erroresSintacticos.insertarF(x);
-                }
+                } else erroresSintacticos.insertarF(x);
             } else {
                 if (x == a) {
                     automataPila.eliminarCima();
@@ -86,17 +84,14 @@ public class Sintactico {
                     simboloActual++;
                     objA = obtenerTokenEntrada(programa, simboloActual);
                     a = simbolosPrograma.localiza(objA);
-                } else {
-                    erroresSintacticos.insertarF(x);
-                }
+                } else erroresSintacticos.insertarF(x);
             }
         }
     }
     
-    public void dividirSimbolospProgram(Lista programa) {
+    public void dividirSimbolosProgram(Lista programa) {
         for (int i = 0; i < programa.longitud(); i++) {
-            //String[] linea = programa.localiza(i).toString().split(" ");
-            String[] linea = cad.dividir((String) programa.localiza(i), " ");
+            String[] linea = cad.dividirAString((String) programa.localiza(i), " ");
             for (int j = 0; j < linea.length; j++) {
                 simbolosPrograma.insertarF(linea[j]);
             }
@@ -104,9 +99,9 @@ public class Sintactico {
     }
     
     public String obtenerTokenEntrada(Lista programa, int index) {
-        Lexico l = new Lexico();
+        Lexico0 l = new Lexico0();
         String simbolo = simbolosPrograma.localiza(index).toString();
-        return "";
+        return simbolo;
     }
     
     /*  Inserta los simbolos que encuentre en una línea de programa:
@@ -115,7 +110,7 @@ public class Sintactico {
                 encuentre más a la izquierda
     */
     public void cicloPush(String linea) {
-        String[] simbolos = linea.split(" ");
+        String[] simbolos = cad.dividirAString(linea, " ");
         for (int i = simbolos.length; i > 0; i--) {
             automataPila.insertar(simbolos[i]);
         }

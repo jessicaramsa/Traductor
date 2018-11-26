@@ -1,7 +1,7 @@
 package test;
 
 import archivo.ManejadorArchivos;
-import gramatica.gramatica.FiltrarSimbolos;
+import gramatica.FiltrarSimbolos;
 import java.io.File;
 
 public class GramaticaTest {

@@ -2,21 +2,21 @@ program begin statementlist end
 statementlist statement statementtail
 statementtail statement statementtail
 statementtail 
-statement id dosp igual expression pcoma
-statement read pari idlist pard pcoma
-statement write pari exprlist pard pcoma
+statement id : = expression ;
+statement read ( idlist ) ;
+statement write ( exprlist ) ;
 idlist id idtail
-idtail coma id idtail
+idtail , id idtail
 idtail 
 exprlist expression exprtail
-exprtail coma expression exprtail
+exprtail , expression exprtail
 exprtail 
 expression primary primarytail
 primarytail addop primary primarytail
 primarytail 
-primary pari expression pard
+primary ( expression )
 primary id
 primary intLiteral
-addop mas
-addop menos
+addop +
+addop -
 systemgoal program

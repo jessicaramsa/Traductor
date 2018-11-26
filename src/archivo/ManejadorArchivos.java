@@ -38,9 +38,7 @@ public class ManejadorArchivos {
                     l = br.readLine();
                 }
                 return archivo;
-            } else {
-                return null;
-            }
+            } else return null;
         } catch (IOException e) {
             System.out.println("Error al leer. " + e);
             return null;
