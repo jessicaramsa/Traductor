@@ -13,7 +13,7 @@ public class ManejadorArchivos {
     Lista archivo = new Lista();
     
     public File abrir() {
-        JFileChooser fch = new JFileChooser("src/test");
+        JFileChooser fch = new JFileChooser("src/test/archivos");
         fch.showOpenDialog(fch);
         if (fch.isFileSelectionEnabled()) {
             String path = fch.getSelectedFile().getAbsolutePath();
