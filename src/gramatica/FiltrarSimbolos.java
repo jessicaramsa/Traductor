@@ -124,7 +124,7 @@ public class FiltrarSimbolos {
     }
     
     /*  Comprueba que el simbolo t de los no terminales, no se encuentre en el
-        laado derecho de las producciones. */
+        lado derecho de las producciones. */
     public boolean estaDerecha(String nt, Pila derecha, Pila noTerminales) {
         boolean esDerecha = false;
         int indexD = 0;
