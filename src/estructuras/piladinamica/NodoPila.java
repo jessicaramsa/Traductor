@@ -1,25 +1,25 @@
 package estructuras.piladinamica;
 
-public class NodoPila {
-    Object elemento;
+public class NodoPila<Tipo> {
+    Tipo elemento;
     NodoPila siguiente;
 
     public NodoPila() {}
 
-    public NodoPila(Object e) {
+    public NodoPila(Tipo e) {
         this.elemento = e;
     }
 
-    public NodoPila(Object e, NodoPila n) {
+    public NodoPila(Tipo e, NodoPila n) {
         this.elemento = e;
         this.siguiente = n;
     }
 
-    public void setElemento(Object e) {
+    public void setElemento(Tipo e) {
         this.elemento = e;
     }
 
-    public Object getElemento() {
+    public Tipo getElemento() {
         return elemento;
     }
 

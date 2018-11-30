@@ -1,6 +1,6 @@
 package estructuras.lista;
 
-public class Lista {
+public class Lista<Tipo> {
     private NodoLista cabeza;
     private int longitud;
 
@@ -9,23 +9,15 @@ public class Lista {
         longitud = 0;
     }
 
-    public void setCabeza(NodoLista c) {
-        this.cabeza = c;
-    }
+    public void setCabeza(NodoLista c) { this.cabeza = c; }
 
-    public NodoLista getCabeza() {
-        return cabeza;
-    }
+    public NodoLista getCabeza() { return cabeza; }
 
-    public int longitud() {
-        return longitud;
-    }
+    public int longitud() { return longitud; }
 
-    public boolean esVacia() {
-        return cabeza == null;
-    }
+    public boolean esVacia() { return cabeza == null; }
 
-    public Lista insertarI(Object in) {
+    public Lista insertarI(Tipo in) {
         NodoLista nuevo = new NodoLista(in);
         nuevo.siguiente = cabeza;
         cabeza = nuevo;
@@ -33,9 +25,9 @@ public class Lista {
         return this;
     }
 
-    public Lista insertar(Object e, int p) {
+    public Lista insertar(Tipo e, int p) {
         NodoLista nuevo = new NodoLista(e);
-        if (cabeza == null) cabeza = nuevo;
+        if (esVacia()) cabeza = nuevo;
         else {
             NodoLista puntero = cabeza;
             int c = 0;
@@ -50,21 +42,20 @@ public class Lista {
         return this;
     }
 
-    public Lista insertarF(Object f) {
+    public Lista insertarF(Tipo f) {
         NodoLista nuevo = new NodoLista(f);
-        if (cabeza == null) cabeza = nuevo;
+        if (esVacia()) cabeza = nuevo;
         else {
             NodoLista p = cabeza;
-            while (p.siguiente != null)
-                p = p.siguiente;
+            while (p.siguiente != null) p = p.siguiente;
             p.siguiente = nuevo;
         }
         longitud++;
         return this;
     }
 
-    public int localiza(Object e) {
-        if (cabeza != null) {
+    public int localiza(Tipo e) {
+        if (!esVacia()) {
             NodoLista puntero = cabeza;
             int c = 0;
             while (c < longitud && puntero.siguiente != null) {
@@ -74,12 +65,12 @@ public class Lista {
             if (c < longitud) return c;
             else if (c != longitud) return Integer.parseInt(null);
         }
-        return Integer.parseInt(null);
+        return -1;
     }
 
-    public Object localiza(int p) {
-        if (cabeza == null)
-            return "La lista solo tiene " + longitud + " elementos.";
+    public Tipo localiza(int p) {
+        if (esVacia())
+            return (Tipo) ("La lista solo tiene " + longitud + " elementos.");
         else {
             NodoLista puntero = cabeza;
             int c = 0;
@@ -87,12 +78,26 @@ public class Lista {
                 puntero = puntero.siguiente;
                 c++;
             }
-            if (c != p) return "La lista no contiene la posición " + p + ".";
-            else return puntero.elemento;
+            if (c != p)
+                return (Tipo) ("La lista no contiene la posición " + p + ".");
+            else return (Tipo) puntero.elemento;
         }
     }
 
-    public Object anterior(int p) {
+    public boolean estaElemento(Tipo elemento) {
+        if (esVacia()) return false;
+        else {
+            NodoLista puntero = cabeza;
+            boolean encontrado = false;
+            while (puntero != null && !encontrado) {
+                encontrado = puntero.elemento.equals(elemento);
+                puntero = puntero.siguiente;
+            }
+            return encontrado;
+        }
+    }
+    
+    public Tipo anterior(int p) {
         NodoLista puntero = cabeza;
         int c = 0;
 
@@ -101,12 +106,13 @@ public class Lista {
                 puntero = puntero.siguiente;
                 c++;
             }
-            if (c != p) return "La lista no contiene la posición " + p + ".";
-            else return puntero;
-        } else return "La lista está vacía.";
+            if (c != p)
+                return (Tipo) ("La lista no contiene la posición " + p + ".");
+            else return (Tipo) puntero;
+        } else return (Tipo) "La lista está vacía.";
     }
 
-    public Object siguiente(int p) {
+    public Tipo siguiente(int p) {
         NodoLista puntero = cabeza;
         int c = 0;
 
@@ -115,13 +121,13 @@ public class Lista {
                 puntero = puntero.siguiente;
                 c++;
             }
-            if (c < longitud) return puntero;
-            else return "La lista no contiene la posición " + p + ".";
-        } else return "La lista está vacía.";
+            if (c < longitud) return (Tipo) puntero;
+            else return (Tipo) ("La lista no contiene la posición " + p + ".");
+        } else return (Tipo) "La lista está vacía.";
     }
 
-    public void suprimir(Object e) {
-        if (cabeza != null) {
+    public void suprimir(Tipo e) {
+        if (!esVacia()) {
             if (e == cabeza.getElemento()) cabeza = cabeza.getSiguiente();
             else {
                 NodoLista elim = cabeza;
@@ -139,8 +145,7 @@ public class Lista {
             if (p == 0) cabeza = cabeza.getSiguiente();
             else {
                 NodoLista elim = cabeza;
-                for (int i = 0; i < (p - 1); i++)
-                    elim = elim.getSiguiente();
+                for (int i = 0; i < (p - 1); i++) elim = elim.getSiguiente();
                 NodoLista sig = elim.getSiguiente();
                 elim.setSiguiente(sig.getSiguiente());
             }
@@ -151,12 +156,10 @@ public class Lista {
     public void anula() {
         if (!esVacia()) {
             NodoLista puntero = cabeza;
-            int c = 0;
             while (puntero.siguiente == null) {
                 NodoLista elim = puntero;
                 puntero = puntero.siguiente;
                 elim = null;
-                c++;
             }
             longitud = 0;
         } else System.out.println("La lista esta vacía.");
@@ -164,12 +167,12 @@ public class Lista {
 
     public void visualiza() {
         if (!esVacia()) {
-            NodoLista in = cabeza;
+            NodoLista posicion = cabeza;
             int c = 0;
-            while (c < longitud && in != null) {
-                System.out.println(c + ". " + in.getElemento());
-                in = in.getSiguiente();
+            while (c < longitud && posicion != null) {
+                System.out.println((c + 1) + "." + posicion.getElemento());
                 c++;
+                posicion = posicion.siguiente;
             }
         } else System.out.println("Lista vacía.");
     }

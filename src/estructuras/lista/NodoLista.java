@@ -1,21 +1,21 @@
 package estructuras.lista;
 
-public class NodoLista {
-    Object elemento;
+public class NodoLista<Tipo> {
+    Tipo elemento;
     NodoLista siguiente = null;
 
     public NodoLista() {}
 
-    public NodoLista(Object e) {
+    public NodoLista(Tipo e) {
         this.elemento = e;
     }
 
-    public NodoLista(Object e, NodoLista n) {
+    public NodoLista(Tipo e, NodoLista n) {
         this.elemento = e;
         this.siguiente = n;
     }
 
-    public void setElemento(Object e) {
+    public void setElemento(Tipo e) {
         this.elemento = e;
     }
 
@@ -23,7 +23,7 @@ public class NodoLista {
         this.siguiente = s;
     }
 
-    public Object getElemento() {
+    public Tipo getElemento() {
         return elemento;
     }
 
