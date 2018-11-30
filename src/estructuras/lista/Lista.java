@@ -176,4 +176,12 @@ public class Lista<Tipo> {
             }
         } else System.out.println("Lista vacía.");
     }
+    
+    public String[] toArreglo() {
+        String[] nuevaLista = new String[this.longitud()];
+        for (int i = 0; i < this.longitud(); i++) {
+            nuevaLista[i] = (String) this.localiza(i);
+        }
+        return nuevaLista;
+    }
 }

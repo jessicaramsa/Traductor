@@ -1,6 +1,7 @@
 package gramatica;
 
-import estructuras.piladinamica.Pila;
+import archivo.Cadena;
+import estructuras.lista.Lista;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,15 +10,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class FiltrarSimbolos {
-    public Pila producciones = new Pila();
-    public Pila noTerminales = new Pila();
-    public Pila ladoDerecho = new Pila();
-    public Pila terminales = new Pila();
+    private Lista producciones = new Lista();
+    private Lista noTerminales = new Lista();
+    private Lista ladoDerecho = new Lista();
+    private Lista terminales = new Lista();
     public String simboloInicial = null;
     private File file;
+    Cadena cad = new Cadena();
     
-    private Pila tempTerminales = new Pila();
-    private Pila tempNoTerminales = new Pila();
+    private Lista tempTerminales = new Lista();
+    private Lista tempNoTerminales = new Lista();
     
     public FiltrarSimbolos() {}
     
@@ -26,7 +28,7 @@ public class FiltrarSimbolos {
         if (file.exists()) {
             if (leer(file)) {
                 clasificarNoTerminales(tempNoTerminales);
-                buscarInicial(ladoDerecho, tempNoTerminales);
+                buscarInicial(ladoDerecho, noTerminales, tempNoTerminales);
                 clasificarTerminales(tempTerminales, noTerminales);
             } else {
                 System.out.println("El archivo está vacío.");
@@ -46,7 +48,7 @@ public class FiltrarSimbolos {
             String l = br.readLine();
             if (l != null) {
                 while (l != null) {
-                    producciones.insertar(l);
+                    producciones.insertarF(l);
                     dividirProduccion(l);
                     l = br.readLine();
                 }
@@ -77,19 +79,23 @@ public class FiltrarSimbolos {
                 producción
     */
     public void dividirProduccion(String linea) {
-        String[] produccion = linea.split(" ");
+        //String[] produccion = linea.split(" ");
+        Lista produccion = cad.divideCadena(linea);
+        
         String derecha = "";
-        for (int i = 0; i < produccion.length; i++) {
+        for (int i = 0; i < produccion.longitud(); i++) {
             if (i > 0) {
-                derecha += produccion[i] + " ";
-                String[] izquierda = produccion[i].split(" ");
-                for (String izquierda1 : izquierda) {
-                    tempTerminales.insertar(izquierda1);
+                derecha += produccion.localiza(i) + " ";
+                Lista izquierda = cad.divideCadena((String) produccion.localiza(i));
+                
+                for (int j = 0; j < izquierda.longitud(); j++) {
+                    tempTerminales.insertarF(izquierda.localiza(j));
                 }
-            } else tempNoTerminales.insertar(produccion[i].trim());
+            } else
+                tempNoTerminales.insertarF(produccion.localiza(i).toString().trim());
         }
         derecha = derecha.trim();
-        ladoDerecho.insertar(derecha);
+        ladoDerecho.insertarF(derecha);
     }
     
     /*
@@ -100,76 +106,82 @@ public class FiltrarSimbolos {
             a. Se tomará el primer símbolo del lado izquierdo de la primera
                 producción encontrada dentro de la gramática
     */
-    public void buscarInicial(Pila derecha, Pila noTerminales) {
-        int indexNT = 0;
-        String simbolo = noTerminales.buscarPosicion(indexNT).toString();
-        boolean esDerecha = false;
-        boolean esRepetido = false;
+    public void buscarInicial(Lista producciones, Lista noTerminales, Lista noTR) {
+        int[] repetido = estaRepetido(tempNoTerminales, noTerminales).clone();
+        boolean[] derecha = estaDerecha(producciones, noTerminales).clone();
+        boolean encontrado = false;
+        int index = 0;
         
-        while (indexNT < noTerminales.longitud() && esDerecha) {
-            simbolo = noTerminales.buscarPosicion(indexNT).toString();
-            esDerecha = estaDerecha(simbolo, derecha, noTerminales);
-            indexNT++;
-        }
-        indexNT = 0;
-        while (indexNT < noTerminales.longitud() && esRepetido) {
-            simbolo = noTerminales.buscarPosicion(indexNT).toString();
-            esRepetido = esRepetido(simbolo, noTerminales);
-            indexNT++;
+        while (index < noTerminales.longitud() && !encontrado) {
+            if (repetido[index] == 1 && !derecha[index]) encontrado = true;
+            else index++;
         }
         
-        if (!esDerecha && !esRepetido) {
-            simboloInicial = simbolo;
-        } else simboloInicial = noTerminales.buscarPosicion(0).toString();
+        if (encontrado) simboloInicial = (String) noTerminales.localiza(index);
+        else simboloInicial = noTerminales.localiza(0).toString();
     }
     
-    /*  Comprueba que el simbolo t de los no terminales, no se encuentre en el
+    /*  Comprueba que cada símbolo de los no terminales, no se encuentre en el
         lado derecho de las producciones. */
-    public boolean estaDerecha(String nt, Pila derecha, Pila noTerminales) {
-        boolean esDerecha = false;
-        int indexD = 0;
-        while (indexD < derecha.longitud() && !esDerecha) {
-            String linea = derecha.buscarPosicion(indexD).toString();
-            String[] simbolos = linea.split(" ");
-            int s = 0;
-            while (!esDerecha && s < simbolos.length) {
-                esDerecha = nt.equals(simbolos[s]);
-                s++;
+    public boolean[] estaDerecha(Lista producciones, Lista noTerminales) {
+        boolean[] derecha = new boolean[noTerminales.longitud()];
+
+        for (int i = 0; i < noTerminales.longitud(); i++) {
+            boolean ladoDerecho = false;
+            int indexProd = 0;
+            
+            while (!ladoDerecho && indexProd < producciones.longitud()) {
+                String linea = producciones.localiza(indexProd).toString();
+                Lista s = cad.divideCadena(linea);
+                int indexS = 0;
+                
+                while (!ladoDerecho && indexS < s.longitud()) {
+                    ladoDerecho = s.localiza(indexS).equals(noTerminales.localiza(i));
+                    indexS++;
+                }
+                indexProd++;
             }
-            indexD++;
+            derecha[i] = ladoDerecho;
         }
-        return esDerecha;
+        return derecha;
     }
     
-    /*  Comprueba que el simbolo t de los no terminales no se encuentre repetido
+    /*  Comprueba que cada símbolo de los no terminales no se encuentre repetido
         del lado izquierdo de las producciones. */
-    public boolean esRepetido(String nt, Pila noTerminales) {
-        boolean esRepetido = false;
-        int indexNT = 0, repeticiones = 0;
-        while (indexNT < noTerminales.longitud() && esRepetido
-                                && (repeticiones > 1 || repeticiones == 0)) {
-            esRepetido = noTerminales.buscarElemento(nt);
-            if (esRepetido) repeticiones++;
-            indexNT++;
+    public int[] estaRepetido(Lista tempNoTerminales, Lista noTerminales) {
+        int[] repetido = new int[noTerminales.longitud()];
+
+        for (int i = 0; i < noTerminales.longitud(); i++) {
+            int izquierda = 0;
+            
+            for (int j = 0; j < tempNoTerminales.longitud(); j++) {
+                String linea = tempNoTerminales.localiza(j).toString();
+                Lista s = cad.divideCadena(linea);
+                for (int k = 0; k < 10; k++) {
+                    if (s.localiza(k).equals(noTerminales.localiza(i)))
+                        izquierda++;
+                }
+            }
+            repetido[i] = izquierda;
         }
-        return esRepetido;
+        return repetido;
     }
     
     /* Se comprueba si el elemento a insertar ya había sido insertado. */
-    public void quitarRepetidos(Pila estructura, Object elemento) {
-        if (!estructura.buscarElemento(elemento)) {
-            estructura.insertar(elemento);
+    public void quitarRepetidos(Lista estructura, Object elemento) {
+        if (!estructura.estaElemento(elemento)) {
+            estructura.insertarF(elemento);
         }
     }
     
     /* Comprueba que el simbolo objT sea o no un simbolo terminal. */
-    public boolean esNoTerminal(String objT, Pila nT) {
+    public boolean esNoTerminal(String objT, Lista nT) {
         int indexNT = 0;
-        String objNT = nT.buscarPosicion(indexNT).toString();
+        String objNT = nT.localiza(indexNT).toString();
         boolean noTerminal = objNT.equals(objT);
         
         while (indexNT < nT.longitud() && !noTerminal) {
-            objNT = nT.buscarPosicion(indexNT).toString();
+            objNT = nT.localiza(indexNT).toString();
             noTerminal = objT.equals(objNT);
             indexNT++;
         }
@@ -177,9 +189,9 @@ public class FiltrarSimbolos {
     }
     
     /* Se quitan los repetidos de la estructura de símbolos no terminales. */
-    public void clasificarNoTerminales(Pila nT) {
+    public void clasificarNoTerminales(Lista nT) {
         for (int i = 0; i < nT.longitud(); i++) {
-            quitarRepetidos(noTerminales, nT.buscarPosicion(i));
+            quitarRepetidos(noTerminales, nT.localiza(i));
         }
     }
     
@@ -197,22 +209,28 @@ public class FiltrarSimbolos {
             c. Al no pertenecer al conjunto de símbolos no terminales, dicho
                 símbolo se insertará en la estructura de símbolos terminales.
     */
-    public void clasificarTerminales(Pila t, Pila nT) {
+    public void clasificarTerminales(Lista t, Lista nT) {
         /* comprobar que no hay simbolos repetidos */
-        Pila nuevosT = new Pila();
-        Pila nuevosNT = new Pila();
+        Lista nuevosT = new Lista();
+        Lista nuevosNT = new Lista();
         for (int i = 0; i < t.longitud(); i++) {
-            quitarRepetidos(nuevosT, t.buscarPosicion(i));
+            quitarRepetidos(nuevosT, t.localiza(i));
         }
         for (int j = 0; j < nT.longitud(); j++) {
-            quitarRepetidos(nuevosNT, nT.buscarPosicion(j));
+            quitarRepetidos(nuevosNT, nT.localiza(j));
         }
         
         /*  recorrer cada simbolo del lado derecho y comparar si son o no
             simbolos no terminales. */
         for (int indexT = 0; indexT < nuevosT.longitud(); indexT++) {
-            String objT = nuevosT.buscarPosicion(indexT).toString();
+            String objT = nuevosT.localiza(indexT).toString();
             if (!esNoTerminal(objT, nuevosNT)) quitarRepetidos(terminales, objT);
         }
     }
+    
+    public String[] getProducciones() { return this.producciones.toArreglo(); }
+    public String[] getNoTerminales() { return this.noTerminales.toArreglo(); }
+    public String[] getTerminales() { return this.terminales.toArreglo(); }
+    public String[] getLadoDerecho() { return this.ladoDerecho.toArreglo(); }
+    public String getInicial() { return this.simboloInicial; }
 }

@@ -10,13 +10,21 @@ public class GramaticaTest {
         File file = ma.abrir();
         FiltrarSimbolos a = new FiltrarSimbolos(file);
         System.out.println("Producciones:");
-        a.getProducciones().visualiza();
+        for (int i = 0; i < a.getProducciones().length; i++) {
+            System.out.println((i + 1) + "." + a.getProducciones()[i]);
+        }
         System.out.println("\nLado izquierdo sin repetir (NT):");
-        a.getNoTerminales().visualiza();
+        for (int i = 0; i < a.getNoTerminales().length; i++) {
+            System.out.println((i + 1) + "." + a.getNoTerminales()[i]);
+        }
         System.out.println("\nLado derecho:");
-        a.getLadoDerecho().visualiza();
+        for (int i = 0; i < a.getLadoDerecho().length; i++) {
+            System.out.println((i + 1) + "." + a.getLadoDerecho()[i]);
+        }
         System.out.println("\nLado derecho sin repetir (T):");
-        a.getTerminales().visualiza();
+        for (int i = 0; i < a.getTerminales().length; i++) {
+            System.out.println((i + 1) + "." + a.getTerminales()[i]);
+        }
         System.out.println("\nSímbolo inicial: " + a.simboloInicial);
     }
     
