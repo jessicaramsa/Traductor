@@ -1,6 +1,6 @@
 package analizador.sintactico;
 
-import analizador.lexico.Lexico0;
+import analizador.lexico.Lexico;
 import archivo.Cadena;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
@@ -24,10 +24,10 @@ public class Sintactico {
                                 {0,0,0,0,0,0,0,0,0,0,0,20,21,0},
                                 {22,0,0,0,0,0,0,0,0,0,0,0,0,0}};
     Lista erroresSintacticos = new Lista();
-    Pila producciones = new Pila();
-    Pila ladoDerecho = new Pila();
-    Pila noTerminales = new Pila();
-    Pila terminales = new Pila();
+    Lista producciones = new Lista();
+    Lista ladoDerecho = new Lista();
+    Lista noTerminales = new Lista();
+    Lista terminales = new Lista();
     String simboloInicial = "";
     Lista simbolosPrograma = new Lista();
     FiltrarSimbolos fs = new FiltrarSimbolos();
@@ -49,7 +49,7 @@ public class Sintactico {
             File filePrograma = ma.abrir();
             if (filePrograma.exists()) {
                 Lista programa = ma.leer(filePrograma);
-                if(!programa.esVacia()) leerPrograma(programa, simboloInicial);
+                if(!programa.esVacia()) lldriver(programa, simboloInicial);
             } else {
                 System.out.println("El archivo " + filePrograma.getName() + "no existe.");
             }
@@ -58,13 +58,13 @@ public class Sintactico {
         }
     }
 
-    public void leerPrograma(Lista programa, String s) {
+    public void lldriver(Lista programa, String s) {
         String objX, objA;
         int x = 0, a = 0, simboloActual = 0;
         
         automataPila.insertar(s);
         objX = automataPila.obtCima().toString();
-        x = noTerminales.buscarElementoPosicion(objX);
+        x = noTerminales.localiza(objX);
         dividirSimbolosProgram(programa);
         objA = obtenerTokenEntrada(programa, simboloActual);
         a = simbolosPrograma.localiza(objA);
@@ -73,9 +73,9 @@ public class Sintactico {
             if (fs.esNoTerminal(objX, terminales)) {
                 if (matrizPredictiva[x][a] != 0) {
                     int index = matrizPredictiva[x][a];
-                    String linea = ladoDerecho.buscarPosicion(index).toString();
+                    String linea = ladoDerecho.localiza(index).toString();
                     automataPila.eliminarCima();
-                    cicloPush(linea);
+                    automataPila.cicloPush(linea);
                 } else erroresSintacticos.insertarF(x);
             } else {
                 if (x == a) {
@@ -91,28 +91,16 @@ public class Sintactico {
     
     public void dividirSimbolosProgram(Lista programa) {
         for (int i = 0; i < programa.longitud(); i++) {
-            String[] linea = cad.dividirAString((String) programa.localiza(i), " ");
-            for (int j = 0; j < linea.length; j++) {
-                simbolosPrograma.insertarF(linea[j]);
+            Lista linea = cad.dividirCadena((String) programa.localiza(i));
+            for (int j = 0; j < linea.longitud(); j++) {
+                simbolosPrograma.insertarF(linea.localiza(j));
             }
         }
     }
     
     public String obtenerTokenEntrada(Lista programa, int index) {
-        Lexico0 l = new Lexico0();
+        Lexico l = new Lexico();
         String simbolo = simbolosPrograma.localiza(index).toString();
         return simbolo;
-    }
-    
-    /*  Inserta los simbolos que encuentre en una línea de programa:
-            1.Ingresa el último simbolo encontrado en la línea del programa
-            2.El símbolo que queda en la cima de la pila será el que se
-                encuentre más a la izquierda
-    */
-    public void cicloPush(String linea) {
-        String[] simbolos = cad.dividirAString(linea, " ");
-        for (int i = simbolos.length; i > 0; i--) {
-            automataPila.insertar(simbolos[i]);
-        }
     }
 }
