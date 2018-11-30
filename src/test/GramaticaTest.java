@@ -10,13 +10,13 @@ public class GramaticaTest {
         File file = ma.abrir();
         FiltrarSimbolos a = new FiltrarSimbolos(file);
         System.out.println("Producciones:");
-        a.producciones.visualiza();
-        System.out.println("\nLado izquierdo sin repetir (símbolos no terminales):");
-        a.noTerminales.visualiza();
+        a.getProducciones().visualiza();
+        System.out.println("\nLado izquierdo sin repetir (NT):");
+        a.getNoTerminales().visualiza();
         System.out.println("\nLado derecho:");
-        a.ladoDerecho.visualiza();
-        System.out.println("\nLado derecho sin repetir (símbolos terminales):");
-        a.terminales.visualiza();
+        a.getLadoDerecho().visualiza();
+        System.out.println("\nLado derecho sin repetir (T):");
+        a.getTerminales().visualiza();
         System.out.println("\nSímbolo inicial: " + a.simboloInicial);
     }
     

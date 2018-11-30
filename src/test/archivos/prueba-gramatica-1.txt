@@ -2,7 +2,7 @@ program begin statementlist end
 statementlist statement statementtail
 statementtail statement statementtail
 statementtail 
-statement id : = expression ;
+statement id := expression ;
 statement read ( idlist ) ;
 statement write ( exprlist ) ;
 idlist id idtail
