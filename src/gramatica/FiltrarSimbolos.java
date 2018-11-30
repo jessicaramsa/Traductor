@@ -80,13 +80,13 @@ public class FiltrarSimbolos {
     */
     public void dividirProduccion(String linea) {
         //String[] produccion = linea.split(" ");
-        Lista produccion = cad.divideCadena(linea);
+        Lista produccion = cad.dividirCadena(linea);
         
         String derecha = "";
         for (int i = 0; i < produccion.longitud(); i++) {
             if (i > 0) {
                 derecha += produccion.localiza(i) + " ";
-                Lista izquierda = cad.divideCadena((String) produccion.localiza(i));
+                Lista izquierda = cad.dividirCadena((String) produccion.localiza(i));
                 
                 for (int j = 0; j < izquierda.longitud(); j++) {
                     tempTerminales.insertarF(izquierda.localiza(j));
@@ -132,7 +132,7 @@ public class FiltrarSimbolos {
             
             while (!ladoDerecho && indexProd < producciones.longitud()) {
                 String linea = producciones.localiza(indexProd).toString();
-                Lista s = cad.divideCadena(linea);
+                Lista s = cad.dividirCadena(linea);
                 int indexS = 0;
                 
                 while (!ladoDerecho && indexS < s.longitud()) {
@@ -156,7 +156,7 @@ public class FiltrarSimbolos {
             
             for (int j = 0; j < tempNoTerminales.longitud(); j++) {
                 String linea = tempNoTerminales.localiza(j).toString();
-                Lista s = cad.divideCadena(linea);
+                Lista s = cad.dividirCadena(linea);
                 for (int k = 0; k < 10; k++) {
                     if (s.localiza(k).equals(noTerminales.localiza(i)))
                         izquierda++;

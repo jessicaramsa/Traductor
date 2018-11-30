@@ -3,7 +3,7 @@ package archivo;
 import estructuras.lista.Lista;
 
 public class Cadena {
-    public Lista divideCadena(String cadena) {
+    public Lista dividirCadena(String cadena) {
         char[] caracteres = cadena.toCharArray();
         Lista palabras = new Lista();
         String palabra = "";

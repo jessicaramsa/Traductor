@@ -1,21 +1,19 @@
 package estructuras.piladinamica;
 
+import archivo.Cadena;
+
 public class Pila<Tipo> {
     private NodoPila<Tipo> cima;
     private int longitud;
 
-    public Pila() {
-        this.cima = null;
-    }
+    public Pila() { this.cima = null; }
 
     public Pila(int c) {
         this.cima = null;
         this.longitud = 0;
     }
 
-    public Tipo obtCima() {
-        return cima.elemento;
-    }
+    public Tipo obtCima() { return cima.elemento; }
 
     public void insertar(Tipo e) {
         NodoPila nuevo = new NodoPila(e);
@@ -24,19 +22,23 @@ public class Pila<Tipo> {
         longitud++;
     }
 
+    public void cicloPush(String linea) {
+        Cadena cad = new Cadena();
+        String[] simbolos = cad.dividirCadena(linea).toArreglo();
+        for (int i = simbolos.length; i > 0; i--)
+            this.insertar((Tipo) simbolos[i]);
+    }
+    
     public void eliminarCima() {
         if (!esVacia()) {
             NodoPila antiguo = cima;
             cima = cima.siguiente;
             antiguo.siguiente = null;
             longitud--;
-        } else
-            System.out.println("Pila vacía, operación no posible.");
+        } else System.out.println("Pila vacía, operación no posible.");
     }
     
-    public boolean esVacia() {
-        return cima == null;
-    }
+    public boolean esVacia() { return cima == null; }
 
     public void limpiar() {
         cima = null;
