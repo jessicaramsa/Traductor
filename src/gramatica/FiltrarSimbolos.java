@@ -245,7 +245,7 @@ public class FiltrarSimbolos {
     public int localizaSimbolo(String[] estructura, String obj) {
         int index = 0;
         for (int i = 0; i < estructura.length; i++) {
-            if (estructura[i].equals(obj)) index = i + 1;
+            if (estructura[i].equals(obj)) index = i;
         }
         return index;
     }

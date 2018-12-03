@@ -26,7 +26,7 @@ public class Pila<Tipo> {
         Cadena cad = new Cadena();
         String[] simbolos = cad.dividirCadena(linea).toArreglo();
         for (int i = simbolos.length; i > 0; i--)
-            this.insertar((Tipo) simbolos[i]);
+            this.insertar((Tipo) simbolos[i - 1]);
     }
     
     public void eliminarCima() {

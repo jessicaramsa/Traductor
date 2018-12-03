@@ -65,7 +65,7 @@ public class Sintactico {
                 indA = localizaA(objA.getSimbolo());
                 if (matrizPredictiva[indX][indA] != 0) {
                     // reemplaza x con production[Predict[x,a]]
-                    int indexProduccion = matrizPredictiva[indX][indA];
+                    int indexProduccion = matrizPredictiva[indX][indA] - 1;
                     String nuevaProduccion = g.getLadoDerecho()[indexProduccion];
                     automataPila.eliminarCima();
                     automataPila.cicloPush(nuevaProduccion);
@@ -79,6 +79,8 @@ public class Sintactico {
             }
             objX.setSimbolo((String) automataPila.obtCima());
         }
+        if (!errorSintactico.esVacia()) errorSintactico.visualiza();
+        else System.out.println("Programa correcto");
     }
 
     /* Identifica en token de A dentro de las estructuras de la gramática */

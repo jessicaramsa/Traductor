@@ -57,6 +57,7 @@ public class Lexico {
         for (int iP = 0; iP < programaALeer.longitud(); iP++) {
             String lineaPrograma = (String) programaALeer.localiza(iP);
             char[] caracteres = lineaPrograma.toCharArray();
+            char ultimoChar = caracteres[caracteres.length - 1];
             String simbolo = "";
             estado = cambiarEstado(caracteres[0], 0);
             simbolo += caracteres[0];
@@ -64,12 +65,18 @@ public class Lexico {
             for (int indLinea = 1; indLinea < caracteres.length; indLinea++) {
                 estado = cambiarEstado(caracteres[indLinea], estado);
                 
-                if (caracteres[indLinea] == ' ' || caracteres.length == '\n') {
+                if (caracteres[indLinea] == ' ' || caracteres[indLinea] == ultimoChar) {
+                    if (caracteres[indLinea] == ultimoChar)
+                        simbolo += caracteres[indLinea];
                     generarToken(simbolo, estado);
                     simbolo = "";
                     estado = cambiarEstado(caracteres[indLinea], estado);
                 } else {
-                    simbolo += caracteres[indLinea];
+                    if (caracteres[indLinea] == ' ' || caracteres[indLinea] == ultimoChar) {
+                        generarToken(simbolo, estado);
+                        simbolo = "";
+                        estado = cambiarEstado(caracteres[indLinea], estado);
+                    } else simbolo += caracteres[indLinea];
                 }
             }
             estado = 0;
@@ -136,7 +143,7 @@ public class Lexico {
             case 2: clasificacion = 203; break;
             case 3: clasificacion = 202; break;
             case 4: clasificacion = 204; break;
-            default: clasificacion = 0; break;
+            default: clasificacion = 200; break;
         }
         token.insertarF(new Token(simbolo, clasificacion));
     }
