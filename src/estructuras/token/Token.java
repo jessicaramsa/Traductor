@@ -4,6 +4,8 @@ public class Token {
     private String simbolo;
     private int clasificacion;
     
+    public Token() {}
+    
     public Token(String simbolo, int clasificacion) {
         this.simbolo = simbolo;
         this.clasificacion = clasificacion;

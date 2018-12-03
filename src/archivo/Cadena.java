@@ -22,4 +22,8 @@ public class Cadena {
         if (!blanco) palabras.insertarF(palabra);
         return palabras;
     }
+    
+    public String quitarEspacios(String cadena) {
+        return cadena.replaceAll(" ", "");
+    }
 }

@@ -79,7 +79,6 @@ public class FiltrarSimbolos {
                 producción
     */
     public void dividirProduccion(String linea) {
-        //String[] produccion = linea.split(" ");
         Lista produccion = cad.dividirCadena(linea);
         
         String derecha = "";

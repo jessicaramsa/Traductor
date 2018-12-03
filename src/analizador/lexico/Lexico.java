@@ -1,42 +1,79 @@
 package analizador.lexico;
 
+import archivo.Cadena;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
 import estructuras.token.Token;
 import java.io.File;
 
 public class Lexico {
-    String simbolo = "";
-    int estado = 0, index = 0, clasificacion = 0;
+    int estado = 0, clasificacion = 0;
+    Lista<Token> token = new Lista();
+    int nextToken = 0;
+    Lista programaALeer;
+    Cadena c = new Cadena();
+    /*  Clasificaciones
+        200 - Error
+        201 - Palabra reservada
+        202 - Identificador
+        203 - IntLiteral
+        204 - Caracter especial
+    */
 
     public Lexico() {
         ManejadorArchivos ma = new ManejadorArchivos();
         File file = ma.abrirGrafico();
         if (file.exists()) {
-            Lista entradas = ma.leer(file);
-
-            for (int i = 0; i < entradas.longitud(); i++) {
-                filtrar((String) entradas.localiza(i));
+            programaALeer = ma.leer(file);
+            if (!programaALeer.esVacia()) {
+                estado = 0;
+                filtrarEntrada();
+                System.out.println("> Entradas");
+                programaALeer.visualiza();
+                System.out.println("> Tokens");
+                for (int i = 0; i < token.longitud(); i++) {
+                    System.out.println(token.localiza(i).getClasificacion()
+                            + " - " + token.localiza(i).getSimbolo());
+                }
             }
         }
     }
     
-    public Lexico(Lista programaALeer) {
+    public Lexico(Lista programa) {
+        programaALeer = programa;
         if (!programaALeer.esVacia()) {
-            //
+            estado = 0;
+            filtrarEntrada();
+            System.out.println("> Tokens");
+            for (int i = 0; i < token.longitud(); i++) {
+                System.out.println(token.localiza(i).getClasificacion()
+                        + " - " + token.localiza(i).getSimbolo());
+            }
         }
     }
 
     /* Filtrar el caracter que conforma la palabra y sus estados */
-    public void filtrar(String cadena) {
-        char[] caracteres = cadena.toCharArray();
-        while (index < caracteres.length) {
-            estado = cambiarEstado(caracteres[index], 0);
-            index++;
-        }
-        
-        switch(estado) {
-            //
+    public void filtrarEntrada() {
+        for (int iP = 0; iP < programaALeer.longitud(); iP++) {
+            String lineaPrograma = (String) programaALeer.localiza(iP);
+            char[] caracteres = lineaPrograma.toCharArray();
+            String simbolo = "";
+            estado = cambiarEstado(caracteres[0], 0);
+            simbolo += caracteres[0];
+            
+            for (int indLinea = 1; indLinea < caracteres.length; indLinea++) {
+                estado = cambiarEstado(caracteres[indLinea], estado);
+                
+                if (caracteres[indLinea] == ' ' || caracteres.length == '\n') {
+                    generarToken(simbolo, estado);
+                    simbolo = "";
+                    estado = cambiarEstado(caracteres[indLinea], estado);
+                } else {
+                    simbolo += caracteres[indLinea];
+                }
+            }
+            estado = 0;
+            simbolo = "";
         }
     }
 
@@ -92,10 +129,21 @@ public class Lexico {
                 (c >= '[' && c <= '_') || (c >= '{' && c <= '}');
     }
 
+    /* Genera un nuevo Token */
+    public void generarToken(String simbolo, int estado) {
+        switch (estado) {
+            case 1: clasificacion = 203; break;
+            case 2: clasificacion = 203; break;
+            case 3: clasificacion = 202; break;
+            case 4: clasificacion = 204; break;
+            default: clasificacion = 0; break;
+        }
+        token.insertarF(new Token(simbolo, clasificacion));
+    }
+    
     /* Regresa el siguiente token al analizador sintáctico */
-    public String scanner() {
-        String siguienteSimbolo = "";
-        //
-        return siguienteSimbolo;
+    public Token scanner() {
+        nextToken++;
+        return token.localiza(nextToken);
     }
 }

@@ -5,6 +5,7 @@ import archivo.Cadena;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
 import estructuras.piladinamica.Pila;
+import estructuras.token.Token;
 import gramatica.FiltrarSimbolos;
 import java.io.File;
 
@@ -50,17 +51,18 @@ public class Sintactico {
     }
 
     public void lldriver() {
-        String objX, objA;
+        Token objX = new Token();
+        Token objA = new Token();
         int indX = 0, indA = 0;
         
         automataPila.insertar(g.getInicial());
-        objX = (String) automataPila.obtCima();
-        objA = l.scanner();
+        objX.setSimbolo((String) automataPila.obtCima());
+        objA.setSimbolo(l.scanner().getSimbolo());
         
         while (!automataPila.esVacia()) {
-            if (g.esNoTerminal(objX)) {
-                indX = g.localizaSimbolo(g.getNoTerminales(), objX);
-                indA = localizaA(objA);
+            if (g.esNoTerminal(objX.getSimbolo())) {
+                indX = g.localizaSimbolo(g.getNoTerminales(), objX.getSimbolo());
+                indA = localizaA(objA.getSimbolo());
                 if (matrizPredictiva[indX][indA] != 0) {
                     // reemplaza x con production[Predict[x,a]]
                     int indexProduccion = matrizPredictiva[indX][indA];
@@ -69,16 +71,17 @@ public class Sintactico {
                     automataPila.cicloPush(nuevaProduccion);
                 } else errorSintactico.insertarF(objX);
             } else {
-                if (objX.equals(objA)) {
+                if (objX.getClasificacion() == objA.getClasificacion()) {
                     automataPila.eliminarCima();
                     //regresame el siguiente token, analizador lexico
-                    objA = l.scanner();
+                    objA.setSimbolo(l.scanner().getSimbolo());
                 } else errorSintactico.insertarF(objX);
             }
-            objX = (String) automataPila.obtCima();
+            objX.setSimbolo((String) automataPila.obtCima());
         }
     }
 
+    /* Identifica en token de A dentro de las estructuras de la gramática */
     public int localizaA(String objA) {
         int indA = 0;
         if (g.esNoTerminal(objA))
