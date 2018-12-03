@@ -11,7 +11,7 @@ public class Lexico {
 
     public Lexico() {
         ManejadorArchivos ma = new ManejadorArchivos();
-        File file = ma.abrir();
+        File file = ma.abrirGrafico();
         if (file.exists()) {
             Lista entradas = ma.leer(file);
 
@@ -21,6 +21,13 @@ public class Lexico {
         }
     }
     
+    public Lexico(File programaALeer) {
+        if (programaALeer.exists()) {
+            ManejadorArchivos ma = new ManejadorArchivos();
+            Lista entrada = ma.leer(programaALeer);
+        }
+    }
+
     /* Filtrar el caracter que conforma la palabra y sus estados */
     public void filtrar(String cadena) {
         char[] caracteres = cadena.toCharArray();
@@ -81,8 +88,15 @@ public class Lexico {
 
     /* Comprueba si el caracter a leer es un caracter especial */
     public boolean esEspecial(char c) {
-        return (c == 33) || (c >= 36 && c <= 38) ||
-                (c >= 42 && c <= 47) || (c >= 58 && c <= 63) ||
-                (c >= 91 && c <= 95) || (c >= 123 && c <= 125);
+        return (c == '!') || (c >= '$' && c <= '&') ||
+                (c >= '*' && c <= '/') || (c >= ':' && c <= '?') ||
+                (c >= '[' && c <= '_') || (c >= '{' && c <= '}');
+    }
+
+    /* Regresa el siguiente token al analizador sintáctico */
+    public String scanner() {
+        String siguienteSimbolo = "";
+        //
+        return siguienteSimbolo;
     }
 }

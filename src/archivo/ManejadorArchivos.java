@@ -12,7 +12,7 @@ import javax.swing.JFileChooser;
 public class ManejadorArchivos {
     Lista archivo = new Lista();
     
-    public File abrir() {
+    public File abrirGrafico() {
         JFileChooser fch = new JFileChooser("src/test/archivos");
         fch.showOpenDialog(fch);
         if (fch.isFileSelectionEnabled()) {

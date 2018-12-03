@@ -10,6 +10,7 @@ import java.io.File;
 
 public class Sintactico {
     Pila automataPila = new Pila();
+    Lista errorSintactico = new Lista();
     int[][] matrizPredictiva = {{1,0,0,0,0,0,0,0,0,0,0,0,0,0},
                                 {0,0,2,0,0,2,0,0,2,0,0,0,0,0},
                                 {0,4,3,0,0,3,0,0,3,0,0,0,0,0},
@@ -23,33 +24,23 @@ public class Sintactico {
                                 {0,0,18,0,0,0,17,0,0,0,19,0,0,0},
                                 {0,0,0,0,0,0,0,0,0,0,0,20,21,0},
                                 {22,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-    Lista erroresSintacticos = new Lista();
-    Lista producciones = new Lista();
-    Lista ladoDerecho = new Lista();
-    Lista noTerminales = new Lista();
-    Lista terminales = new Lista();
-    String simboloInicial = "";
-    Lista simbolosPrograma = new Lista();
-    FiltrarSimbolos fs = new FiltrarSimbolos();
+    FiltrarSimbolos g;
+    Lexico l;
     Cadena cad = new Cadena();
     
     public Sintactico() {
         System.out.println("> Selecciona el archivo de la gramática");
         ManejadorArchivos ma = new ManejadorArchivos();
-        File fileGramatica = ma.abrir();
+        File fileGramatica = ma.abrirGrafico();
         if (fileGramatica.exists()) {
-            FiltrarSimbolos gramatica = new FiltrarSimbolos(fileGramatica);
-            producciones = gramatica.producciones;
-            ladoDerecho = gramatica.ladoDerecho;
-            noTerminales = gramatica.noTerminales;
-            terminales = gramatica.terminales;
-            simboloInicial = gramatica.simboloInicial;
+            g = new FiltrarSimbolos(fileGramatica);
             
             System.out.println("> Selecciona el archivo del programa");
-            File filePrograma = ma.abrir();
+            File filePrograma = ma.abrirGrafico();
             if (filePrograma.exists()) {
                 Lista programa = ma.leer(filePrograma);
-                if(!programa.esVacia()) lldriver(programa, simboloInicial);
+                l = new Lexico(programa);
+                if(!programa.esVacia()) lldriver();
             } else {
                 System.out.println("El archivo " + filePrograma.getName() + "no existe.");
             }
@@ -58,49 +49,41 @@ public class Sintactico {
         }
     }
 
-    public void lldriver(Lista programa, String s) {
+    public void lldriver() {
         String objX, objA;
-        int x = 0, a = 0, simboloActual = 0;
+        int indX = 0, indA = 0;
         
-        automataPila.insertar(s);
-        objX = automataPila.obtCima().toString();
-        x = noTerminales.localiza(objX);
-        dividirSimbolosProgram(programa);
-        objA = obtenerTokenEntrada(programa, simboloActual);
-        a = simbolosPrograma.localiza(objA);
+        automataPila.insertar(g.getInicial());
+        objX = (String) automataPila.obtCima();
+        objA = l.scanner();
         
         while (!automataPila.esVacia()) {
-            if (fs.esNoTerminal(objX, terminales)) {
-                if (matrizPredictiva[x][a] != 0) {
-                    int index = matrizPredictiva[x][a];
-                    String linea = ladoDerecho.localiza(index).toString();
+            if (g.esNoTerminal(objX)) {
+                indX = g.localizaSimbolo(g.getNoTerminales(), objX);
+                indA = localizaA();
+                if (matrizPredictiva[indX][indA] != 0) {
+                    // reemplaza x con production[Predict[x,a]]
+                    int indexProduccion = matrizPredictiva[indX][indA];
+                    String nuevaProduccion = g.getLadoDerecho()[indexProduccion];
                     automataPila.eliminarCima();
-                    automataPila.cicloPush(linea);
-                } else erroresSintacticos.insertarF(x);
+                    automataPila.cicloPush(nuevaProduccion);
+                } else errorSintactico.insertarF(objX);
             } else {
-                if (x == a) {
+                if (objX.equals(objA)) {
                     automataPila.eliminarCima();
                     //regresame el siguiente token, analizador lexico
-                    simboloActual++;
-                    objA = obtenerTokenEntrada(programa, simboloActual);
-                    a = simbolosPrograma.localiza(objA);
-                } else erroresSintacticos.insertarF(x);
+                    objA = l.scanner();
+                } else errorSintactico.insertarF(objX);
             }
+            objX = automataPila.obtCima();
         }
     }
-    
-    public void dividirSimbolosProgram(Lista programa) {
-        for (int i = 0; i < programa.longitud(); i++) {
-            Lista linea = cad.dividirCadena((String) programa.localiza(i));
-            for (int j = 0; j < linea.longitud(); j++) {
-                simbolosPrograma.insertarF(linea.localiza(j));
-            }
-        }
-    }
-    
-    public String obtenerTokenEntrada(Lista programa, int index) {
-        Lexico l = new Lexico();
-        String simbolo = simbolosPrograma.localiza(index).toString();
-        return simbolo;
+
+    public int localizaA() {
+        int indA = 0;
+        if (g.esNoTerminal(objA))
+            indA = g.localizaSimbolo(g.getNoTerminales(), objA);
+        else indA = g.localizaSimbolo(g.getTerminales(), objA);
+        return indA;
     }
 }

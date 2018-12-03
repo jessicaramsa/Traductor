@@ -7,7 +7,7 @@ import java.io.File;
 public class GramaticaTest {
     public GramaticaTest() {
         ManejadorArchivos ma = new ManejadorArchivos();
-        File file = ma.abrir();
+        File file = ma.abrirGrafico();
         FiltrarSimbolos a = new FiltrarSimbolos(file);
         System.out.println("Producciones:");
         for (int i = 0; i < a.getProducciones().length; i++) {
@@ -25,7 +25,7 @@ public class GramaticaTest {
         for (int i = 0; i < a.getTerminales().length; i++) {
             System.out.println((i + 1) + "." + a.getTerminales()[i]);
         }
-        System.out.println("\nSímbolo inicial: " + a.simboloInicial);
+        System.out.println("\nSímbolo inicial: " + a.getInicial());
     }
     
     public static void main(String[] args) {

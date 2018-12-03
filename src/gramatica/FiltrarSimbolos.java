@@ -14,7 +14,7 @@ public class FiltrarSimbolos {
     private Lista noTerminales = new Lista();
     private Lista ladoDerecho = new Lista();
     private Lista terminales = new Lista();
-    public String simboloInicial = null;
+    private String simboloInicial = null;
     private File file;
     Cadena cad = new Cadena();
     
@@ -175,13 +175,13 @@ public class FiltrarSimbolos {
     }
     
     /* Comprueba que el simbolo objT sea o no un simbolo terminal. */
-    public boolean esNoTerminal(String objT, Lista nT) {
+    public boolean esNoTerminal(String objT) {
         int indexNT = 0;
-        String objNT = nT.localiza(indexNT).toString();
+        String objNT = noTerminales.localiza(indexNT).toString();
         boolean noTerminal = objNT.equals(objT);
         
-        while (indexNT < nT.longitud() && !noTerminal) {
-            objNT = nT.localiza(indexNT).toString();
+        while (indexNT < noTerminales.longitud() && !noTerminal) {
+            objNT = noTerminales.localiza(indexNT).toString();
             noTerminal = objT.equals(objNT);
             indexNT++;
         }
@@ -226,6 +226,26 @@ public class FiltrarSimbolos {
             String objT = nuevosT.localiza(indexT).toString();
             if (!esNoTerminal(objT, nuevosNT)) quitarRepetidos(terminales, objT);
         }
+    }
+    
+    /* Devuelve la posición del símbolo si se encuentra dentro de la estructura */
+    public int localizaSimbolo(String[] estructura, String obj) {
+        int index = 0;
+        for (int i = 0; i < estructura.length; i++) {
+            if (estructura[i].equals(obj)) index = i + 1;
+        }
+        return index;
+    }
+    
+    /* Devuelve el objeto que se encuentra en la posición indicada */
+    public String localizaSimbolo(String[] estructura, int index) {
+        String obj = null;
+        if (index <= estructura.length) {
+            for (int i = 0; i < estructura.length; i++) {
+                if (i == index) obj = estructura[i];
+            }
+        }
+        return obj;
     }
     
     public String[] getProducciones() { return this.producciones.toArreglo(); }
