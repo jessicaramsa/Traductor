@@ -21,10 +21,9 @@ public class Lexico {
         }
     }
     
-    public Lexico(File programaALeer) {
-        if (programaALeer.exists()) {
-            ManejadorArchivos ma = new ManejadorArchivos();
-            Lista entrada = ma.leer(programaALeer);
+    public Lexico(Lista programaALeer) {
+        if (!programaALeer.esVacia()) {
+            //
         }
     }
 

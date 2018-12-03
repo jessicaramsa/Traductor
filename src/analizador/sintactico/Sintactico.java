@@ -60,7 +60,7 @@ public class Sintactico {
         while (!automataPila.esVacia()) {
             if (g.esNoTerminal(objX)) {
                 indX = g.localizaSimbolo(g.getNoTerminales(), objX);
-                indA = localizaA();
+                indA = localizaA(objA);
                 if (matrizPredictiva[indX][indA] != 0) {
                     // reemplaza x con production[Predict[x,a]]
                     int indexProduccion = matrizPredictiva[indX][indA];
@@ -75,11 +75,11 @@ public class Sintactico {
                     objA = l.scanner();
                 } else errorSintactico.insertarF(objX);
             }
-            objX = automataPila.obtCima();
+            objX = (String) automataPila.obtCima();
         }
     }
 
-    public int localizaA() {
+    public int localizaA(String objA) {
         int indA = 0;
         if (g.esNoTerminal(objA))
             indA = g.localizaSimbolo(g.getNoTerminales(), objA);

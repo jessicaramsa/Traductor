@@ -188,6 +188,20 @@ public class FiltrarSimbolos {
         return noTerminal;
     }
     
+    /* Sobrecarga del método que comprueba si un simbolo es No Terminal */
+    public boolean esNoTerminal(String objT, Lista estructura) {
+        int indexNT = 0;
+        String objNT = estructura.localiza(indexNT).toString();
+        boolean noTerminal = objNT.equals(objT);
+        
+        while (indexNT < estructura.longitud() && !noTerminal) {
+            objNT = estructura.localiza(indexNT).toString();
+            noTerminal = objT.equals(objNT);
+            indexNT++;
+        }
+        return noTerminal;
+    }
+    
     /* Se quitan los repetidos de la estructura de símbolos no terminales. */
     public void clasificarNoTerminales(Lista nT) {
         for (int i = 0; i < nT.longitud(); i++) {
