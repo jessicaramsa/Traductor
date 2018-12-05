@@ -55,16 +55,17 @@ public class Lexico {
     
     /* Cambiar estado de acuerdo al Autómata del Analizador Léxico */
     public Token scanner() {
-        if (indA >= linea.length()) {
+        int longitud = linea.length();
+        if (indA == longitud && !linea.isEmpty()) {
             indA = 0;
             indLinea++;
         }
         linea = (String) programaALeer.localiza(indLinea);
-        int longitud = linea.length();
-        char caracter = linea.charAt(indA);
+        char[] caracteres = linea.toCharArray();
+        char caracter = caracteres[indA];
         indB = indA;
         estado = 0;
-        while (indA < longitud) {
+        while (indA < caracteres.length) {
             switch(estado) {
                 case 0:
                     if (esNumero(caracter)) estado = 1;
@@ -136,9 +137,11 @@ public class Lexico {
             case -1:
                 clasf = "findearchivo";
                 break;
+            case 200:
+                clasf = "error";
+                break;
             case 201:
                 clasf = "intLiteral";
-                categoria = 201;
                 break;
             case 203:
                 if (g.esReservada(simbolo)) clasf = "reservada";

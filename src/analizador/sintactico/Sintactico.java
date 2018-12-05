@@ -80,11 +80,11 @@ public class Sintactico {
                     automataPila.eliminarCima();
                     // regresar el siguiente token
                     objA = l.scanner();
-                } else if (objX.getSimbolo().equals("")){
+                } else if (objA.getSimbolo().equals("")){
                     automataPila.limpiar();
-                }else {
-                    errorSintactico.insertarF(objX);
-                    System.out.println("ERROR - " + objX.getSimbolo());
+                } else {
+                    errorSintactico.insertarF(objA);
+                    System.out.println("ERROR - " + objA.getSimbolo());
                     automataPila.eliminarCima();
                 }
             }
@@ -96,10 +96,8 @@ public class Sintactico {
 
     /* Identifica en token de A dentro de las estructuras de la gramática */
     public int localizaA(String objA) {
-        int indA = 0;
         if (g.esNoTerminal(objA))
-            indA = g.localizaSimbolo(g.getNoTerminales(), objA);
-        else indA = g.localizaSimbolo(g.getTerminales(), objA);
-        return indA;
+            return g.localizaSimbolo(g.getNoTerminales(), objA);
+        else return g.localizaSimbolo(g.getTerminales(), objA);
     }
 }
