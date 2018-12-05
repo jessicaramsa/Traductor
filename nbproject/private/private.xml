@@ -3,13 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/estructuras/token/Token.java</file>
-            <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/archivo/Cadena.java</file>
             <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/gramatica/FiltrarSimbolos.java</file>
-            <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/analizador/lexico2/Token.java</file>
-            <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/test/LexicoTest.java</file>
+            <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/test/GramaticaTest.java</file>
             <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/analizador/sintactico/Sintactico.java</file>
-            <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/analizador/lexico2/LectorCC.java</file>
             <file>file:/C:/Users/JessicaRamsa/Google%20Drive/Documentos/ITLEÓN/ISC-5/Lenguajes%20y%20Autómatas/Traductor/src/analizador/lexico/Lexico.java</file>
         </group>
     </open-files>

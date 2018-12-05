@@ -54,6 +54,10 @@ public class Lista<Tipo> {
         return this;
     }
 
+    public void insertarArreglo(Tipo[] l) {
+        for (int i = 0; i < l.length; i++) insertarF(l[i]);
+    }
+    
     public int localiza(Tipo e) {
         if (!esVacia()) {
             NodoLista puntero = cabeza;

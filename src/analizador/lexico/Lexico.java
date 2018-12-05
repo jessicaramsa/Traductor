@@ -60,10 +60,11 @@ public class Lexico {
             indLinea++;
         }
         linea = (String) programaALeer.localiza(indLinea);
+        int longitud = linea.length();
         char caracter = linea.charAt(indA);
         indB = indA;
         estado = 0;
-        while (indA < linea.length()) {
+        while (indA < longitud) {
             switch(estado) {
                 case 0:
                     if (esNumero(caracter)) estado = 1;

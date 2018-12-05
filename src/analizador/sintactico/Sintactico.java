@@ -28,13 +28,14 @@ public class Sintactico {
     FiltrarSimbolos g;
     Lexico l;
     Cadena cad = new Cadena();
+    String[] reservadas = {"begin", "end", "write", "read"};
     
     public Sintactico() {
         System.out.println("> Selecciona el archivo de la gramática");
         ManejadorArchivos ma = new ManejadorArchivos();
         File fileGramatica = ma.abrirGrafico();
         if (fileGramatica.exists()) {
-            g = new FiltrarSimbolos(fileGramatica);
+            g = new FiltrarSimbolos(fileGramatica, reservadas);
             
             System.out.println("> Selecciona el archivo del programa");
             File filePrograma = ma.abrirGrafico();

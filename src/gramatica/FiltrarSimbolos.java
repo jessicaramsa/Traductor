@@ -39,6 +39,20 @@ public class FiltrarSimbolos {
         } else System.out.println("El archivo " + file.getName() + "no existe.");
     }
     
+    public FiltrarSimbolos(File f, String[] pReservadas) {
+        file = f;
+        if (file.exists()) {
+            if (leer(file)) {
+                clasificarNoTerminales(tempNoTerminales);
+                buscarInicial(ladoDerecho, noTerminales, tempNoTerminales);
+                clasificarTerminales(tempTerminales, noTerminales);
+                setReservadas(pReservadas);
+            } else {
+                System.out.println("El archivo está vacío.");
+            }
+        } else System.out.println("El archivo " + file.getName() + "no existe.");
+    }
+    
     /* Lee el archivo seleccionado donde se encuentra la gramática. */
     public boolean leer(File arch) {
         InputStream is = null;
@@ -265,7 +279,6 @@ public class FiltrarSimbolos {
         Lexico l = new Lexico(t, this);
         for (int i = 0; i < t.longitud(); i++) {
             categoria = l.scanner().getCategoria();
-            System.out.println(categoria);
             if (categoria == 203) reservadas.insertarF(t.localiza(i));
         }
     }
@@ -288,6 +301,10 @@ public class FiltrarSimbolos {
             }
         }
         return obj;
+    }
+    
+    public void setReservadas(String[] r) {
+        reservadas.insertarArreglo(r);
     }
     
     public String[] getProducciones() { return this.producciones.toArreglo(); }
