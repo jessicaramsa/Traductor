@@ -1,5 +1,6 @@
 package gramatica;
 
+import analizador.lexico.Lexico;
 import archivo.Cadena;
 import estructuras.lista.Lista;
 import java.io.BufferedReader;
@@ -14,6 +15,7 @@ public class FiltrarSimbolos {
     private Lista noTerminales = new Lista();
     private Lista ladoDerecho = new Lista();
     private Lista terminales = new Lista();
+    private Lista reservadas = new Lista();
     private String simboloInicial = null;
     private File file;
     Cadena cad = new Cadena();
@@ -30,6 +32,7 @@ public class FiltrarSimbolos {
                 clasificarNoTerminales(tempNoTerminales);
                 buscarInicial(ladoDerecho, noTerminales, tempNoTerminales);
                 clasificarTerminales(tempTerminales, noTerminales);
+                clasificarReservadas(terminales);
             } else {
                 System.out.println("El archivo está vacío.");
             }
@@ -201,6 +204,21 @@ public class FiltrarSimbolos {
         return noTerminal;
     }
     
+    /* Comprueba que el obj sea una palabra reservada */
+    public boolean esReservada(String obj) {
+        int indexR = 0;
+        String objR = reservadas.localiza(indexR).toString();
+        boolean reservada = false;
+        
+        while (indexR < reservadas.longitud() && !reservada) {
+            objR = reservadas.localiza(indexR).toString();
+            reservada = objR.equals(obj);
+            indexR++;
+        }
+        
+        return reservada;
+    }
+    
     /* Se quitan los repetidos de la estructura de símbolos no terminales. */
     public void clasificarNoTerminales(Lista nT) {
         for (int i = 0; i < nT.longitud(); i++) {
@@ -241,6 +259,17 @@ public class FiltrarSimbolos {
         }
     }
     
+    /* Clasifica los símbolos terminales y los clasifica a palabras reservadas */
+    public void clasificarReservadas(Lista t) {
+        int categoria = 0;
+        Lexico l = new Lexico(t, this);
+        for (int i = 0; i < t.longitud(); i++) {
+            categoria = l.scanner().getCategoria();
+            System.out.println(categoria);
+            if (categoria == 203) reservadas.insertarF(t.localiza(i));
+        }
+    }
+    
     /* Devuelve la posición del símbolo si se encuentra dentro de la estructura */
     public int localizaSimbolo(String[] estructura, String obj) {
         int index = 0;
@@ -265,5 +294,6 @@ public class FiltrarSimbolos {
     public String[] getNoTerminales() { return this.noTerminales.toArreglo(); }
     public String[] getTerminales() { return this.terminales.toArreglo(); }
     public String[] getLadoDerecho() { return this.ladoDerecho.toArreglo(); }
+    public String[] getReservadas() { return this.reservadas.toArreglo(); }
     public String getInicial() { return this.simboloInicial; }
 }

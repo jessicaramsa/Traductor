@@ -1,124 +1,113 @@
 package analizador.lexico;
 
-import archivo.Cadena;
 import archivo.ManejadorArchivos;
 import estructuras.lista.Lista;
 import estructuras.token.Token;
+import gramatica.FiltrarSimbolos;
 import java.io.File;
 
 public class Lexico {
-    int estado = 0, clasificacion = 0;
-    Lista<Token> token = new Lista();
-    int nextToken = 0;
+    int estado = 0, indA = 0, indB = 0, indLinea = 0;
+    String linea;
     Lista programaALeer;
-    Cadena c = new Cadena();
+    FiltrarSimbolos g;
     /*  Clasificaciones
         200 - Error
-        201 - Palabra reservada
-        202 - Identificador
-        203 - IntLiteral
+        201 - intLiteral
+        202 - Palabra reservada
+        203 - Identificador
         204 - Caracter especial
     */
 
     public Lexico() {
         ManejadorArchivos ma = new ManejadorArchivos();
-        File file = ma.abrirGrafico();
-        if (file.exists()) {
-            programaALeer = ma.leer(file);
+        File programa = ma.abrirGrafico();
+        if (programa.exists()) {
+            programaALeer = ma.leer(programa);
             if (!programaALeer.esVacia()) {
                 estado = 0;
-                filtrarEntrada();
-                System.out.println("> Entradas");
-                programaALeer.visualiza();
-                System.out.println("> Tokens");
-                for (int i = 0; i < token.longitud(); i++) {
-                    System.out.println(token.localiza(i).getClasificacion()
-                            + " - " + token.localiza(i).getSimbolo());
-                }
+                indA = 0;
+                indB = indA;
+                indLinea = 0;
             }
         }
     }
     
-    public Lexico(Lista programa) {
+    public Lexico(String linea, FiltrarSimbolos fs) {
+        programaALeer.insertarF(linea);
+        g = fs;
+        estado = 0;
+        indA = 0;
+        indB = indA;
+        indLinea = 0;
+        linea = (String) programaALeer.localiza(indLinea);
+    }
+    
+    public Lexico(Lista programa, FiltrarSimbolos fs) {
         programaALeer = programa;
-        if (!programaALeer.esVacia()) {
-            estado = 0;
-            filtrarEntrada();
-            System.out.println("> Tokens");
-            for (int i = 0; i < token.longitud(); i++) {
-                System.out.println(token.localiza(i).getClasificacion()
-                        + " - " + token.localiza(i).getSimbolo());
-            }
-        }
-    }
-
-    /* Filtrar el caracter que conforma la palabra y sus estados */
-    public void filtrarEntrada() {
-        for (int iP = 0; iP < programaALeer.longitud(); iP++) {
-            String lineaPrograma = (String) programaALeer.localiza(iP);
-            char[] caracteres = lineaPrograma.toCharArray();
-            char ultimoChar = caracteres[caracteres.length - 1];
-            String simbolo = "";
-            estado = cambiarEstado(caracteres[0], 0);
-            simbolo += caracteres[0];
-            
-            for (int indLinea = 1; indLinea < caracteres.length; indLinea++) {
-                estado = cambiarEstado(caracteres[indLinea], estado);
-                
-                if (caracteres[indLinea] == ' ' || caracteres[indLinea] == ultimoChar) {
-                    if (caracteres[indLinea] == ultimoChar)
-                        simbolo += caracteres[indLinea];
-                    generarToken(simbolo, estado);
-                    simbolo = "";
-                    estado = cambiarEstado(caracteres[indLinea], estado);
-                } else {
-                    if (caracteres[indLinea] == ' ' || caracteres[indLinea] == ultimoChar) {
-                        generarToken(simbolo, estado);
-                        simbolo = "";
-                        estado = cambiarEstado(caracteres[indLinea], estado);
-                    } else simbolo += caracteres[indLinea];
-                }
-            }
-            estado = 0;
-            simbolo = "";
-        }
-    }
-
-    /* Cambiar estado de acuerdo al Autómata del Analizador Léxico */
-    public int cambiarEstado(char caracter, int estado) {
-        switch(estado) {
-            case 0:
-                if (esNumero(caracter)) estado = 1;
-                else if (esCero(caracter)) estado = 2;
-                else if (esLetra(caracter)) estado = 3;
-                else if (esEspecial(caracter)) estado = 4;
-                else estado = 5;
-                break;
-            case 1:
-                if (esNumero(caracter) || esCero(caracter)) estado = 1;
-                else estado = 5;
-                break;
-            case 2:
-                if (caracter == ' ') estado = 2;
-                else estado = 5;
-                break;
-            case 3:
-                if (esLetra(caracter) || esNumero(caracter) || esCero(caracter))
-                    estado = 3;
-                else estado = 5;
-                break;
-            case 4:
-                if (esEspecial(caracter)) estado = 4;
-                else estado = 5;
-                break;
-            case 5: estado = 5; break;
-            default: estado = 5; break;
-        }
-        return estado;
+        g = fs;
+        estado = 0;
+        indA = 0;
+        indB = indA;
+        indLinea = 0;
+        linea = (String) programaALeer.localiza(indLinea);
     }
     
-    /* Comprueba si el caracter a leer es un espacio en blanco */
-    public boolean esBlanco(char c) { return c == ' '; }
+    /* Cambiar estado de acuerdo al Autómata del Analizador Léxico */
+    public Token scanner() {
+        if (indA >= linea.length()) {
+            indA = 0;
+            indLinea++;
+        }
+        linea = (String) programaALeer.localiza(indLinea);
+        char caracter = linea.charAt(indA);
+        indB = indA;
+        estado = 0;
+        while (indA < linea.length()) {
+            switch(estado) {
+                case 0:
+                    if (esNumero(caracter)) estado = 1;
+                    else if (esCero(caracter)) estado = 2;
+                    else if (esLetra(caracter)) estado = 3;
+                    else if (caracter == ':') estado = 4;
+                    else if (esEspecial(caracter)) estado = 5;
+                    else
+                        return generarToken(linea.substring(indB, indA), 200);
+                    break;
+                case 1:
+                    if (esNumero(caracter) || esCero(caracter)) estado = 1;
+                    else
+                        return generarToken(linea.substring(indB, indA), 201);
+                    break;
+                case 2:
+                    if (esNumero(caracter)) estado = 2;
+                    else
+                        return generarToken(linea.substring(indB, indA), 201);
+                    break;
+                case 3:
+                    if (esLetra(caracter) || esNumero(caracter) || esCero(caracter))
+                        estado = 3;
+                    else
+                        return generarToken(linea.substring(indB, indA), 203);
+                    break;
+                case 4:
+                    if (caracter == '=')
+                        return generarToken(linea.substring(indB, indA), 204);
+                    else estado = 6;
+                    break;
+                case 5:
+                    if (esEspecial(caracter))
+                        return generarToken(linea.substring(indB, indA), 204);
+                    else estado = 6;
+                    break;
+                default:
+                    return generarToken(linea.substring(indB, indA), 200);
+            }
+            indA++;
+        }
+        return generarToken("", -1);
+    }
+    
     /* Comprueba si el caracter a leer es 0 */
     public boolean esCero(char c) { return c == '0'; }
     /* Comprueba si el caracter a leer esta dentro del rango 1-9 */
@@ -137,20 +126,30 @@ public class Lexico {
     }
 
     /* Genera un nuevo Token */
-    public void generarToken(String simbolo, int estado) {
-        switch (estado) {
-            case 1: clasificacion = 203; break;
-            case 2: clasificacion = 203; break;
-            case 3: clasificacion = 202; break;
-            case 4: clasificacion = 204; break;
-            default: clasificacion = 200; break;
+    public Token generarToken(String simbolo, int categoria) {
+        estado = 0;
+        indA--;
+        indB = indA;
+        String clasf = "";
+        switch (categoria) {
+            case -1:
+                clasf = "findearchivo";
+                break;
+            case 201:
+                clasf = "intLiteral";
+                categoria = 201;
+                break;
+            case 203:
+                if (g.esReservada(simbolo)) clasf = "reservada";
+                else clasf = "id";
+                break;
+            case 204:
+                clasf = "especial";
+                break;
+            default:
+                clasf = "error";
+                break;
         }
-        token.insertarF(new Token(simbolo, clasificacion));
-    }
-    
-    /* Regresa el siguiente token al analizador sintáctico */
-    public Token scanner() {
-        nextToken++;
-        return token.localiza(nextToken);
+        return new Token(simbolo, clasf, categoria);
     }
 }

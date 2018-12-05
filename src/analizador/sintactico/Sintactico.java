@@ -40,7 +40,7 @@ public class Sintactico {
             File filePrograma = ma.abrirGrafico();
             if (filePrograma.exists()) {
                 Lista programa = ma.leer(filePrograma);
-                l = new Lexico(programa);
+                l = new Lexico(programa, g);
                 if(!programa.esVacia()) lldriver();
             } else {
                 System.out.println("El archivo " + filePrograma.getName() + "no existe.");
@@ -57,7 +57,7 @@ public class Sintactico {
         
         automataPila.insertar(g.getInicial());
         objX.setSimbolo((String) automataPila.obtCima());
-        objA.setSimbolo(l.scanner().getSimbolo());
+        objA = l.scanner();
         
         while (!automataPila.esVacia()) {
             if (g.esNoTerminal(objX.getSimbolo())) {
@@ -69,18 +69,28 @@ public class Sintactico {
                     String nuevaProduccion = g.getLadoDerecho()[indexProduccion];
                     automataPila.eliminarCima();
                     automataPila.cicloPush(nuevaProduccion);
-                } else errorSintactico.insertarF(objX);
-            } else {
-                if (objX.getClasificacion() == objA.getClasificacion()) {
+                } else {
+                    errorSintactico.insertarF(objX);
+                    System.out.println("ERROR - " + objX.getSimbolo());
                     automataPila.eliminarCima();
-                    //regresame el siguiente token, analizador lexico
-                    objA.setSimbolo(l.scanner().getSimbolo());
-                } else errorSintactico.insertarF(objX);
+                }
+            } else {
+                if (objX.getSimbolo().equals(objA.getSimbolo())) {
+                    automataPila.eliminarCima();
+                    // regresar el siguiente token
+                    objA = l.scanner();
+                } else if (objX.getSimbolo().equals("")){
+                    automataPila.limpiar();
+                }else {
+                    errorSintactico.insertarF(objX);
+                    System.out.println("ERROR - " + objX.getSimbolo());
+                    automataPila.eliminarCima();
+                }
             }
-            objX.setSimbolo((String) automataPila.obtCima());
+            if (!automataPila.esVacia())
+                objX.setSimbolo((String) automataPila.obtCima());
         }
-        if (!errorSintactico.esVacia()) errorSintactico.visualiza();
-        else System.out.println("Programa correcto");
+        if (errorSintactico.esVacia()) System.out.println("Programa correcto");
     }
 
     /* Identifica en token de A dentro de las estructuras de la gramática */

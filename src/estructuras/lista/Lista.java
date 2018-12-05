@@ -184,4 +184,12 @@ public class Lista<Tipo> {
         }
         return nuevaLista;
     }
+    
+    public String toCadena() {
+        String nuevaCadena = "";
+        for (int i = 0; i < this.longitud(); i++) {
+            nuevaCadena +=  " " + (String)this.localiza(i);
+        }
+        return nuevaCadena;
+    }
 }

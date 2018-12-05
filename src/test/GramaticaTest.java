@@ -25,6 +25,10 @@ public class GramaticaTest {
         for (int i = 0; i < a.getTerminales().length; i++) {
             System.out.println((i + 1) + "." + a.getTerminales()[i]);
         }
+        System.out.println("\nPalabras reservadas");
+        for (int i = 0; i < a.getReservadas().length; i++) {
+            System.out.println((i + 1) + "." + a.getReservadas()[i]);
+        }
         System.out.println("\nSímbolo inicial: " + a.getInicial());
     }
     

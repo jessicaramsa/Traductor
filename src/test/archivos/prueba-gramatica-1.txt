@@ -19,4 +19,4 @@ primary id
 primary intLiteral
 addop +
 addop -
-systemgoal program
+systemgoal program $
